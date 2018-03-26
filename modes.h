@@ -174,7 +174,7 @@ namespace mode3 {
   uint8_t l_heat[NUM_LEDS];
   uint8_t r_heat[NUM_LEDS];
 
-  void fire(CRGB leds[NUM_LEDS], uint8_t heat[NUM_LEDS], bool reverse = false) {
+  void fire(CRGB* leds, uint8_t* heat, const bool reverse = false) {
     
     // COOLING: How much does the air cool as it rises?
     // Less cooling = taller flames.  More cooling = shorter flames.
@@ -207,11 +207,10 @@ namespace mode3 {
       
       int pixelnumber;
       
-      if (reverse) {
+      if (reverse)
         pixelnumber = (NUM_LEDS-1) - j;
-      } else {
+      else
         pixelnumber = j;
-      }
       
       leds[pixelnumber] = color;
     }
@@ -225,7 +224,11 @@ namespace mode3 {
   }
 }
 
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 
 // 0-3
 #define NUM_MODES 4
@@ -272,3 +275,4 @@ namespace mode {
 
 
 #endif
+
