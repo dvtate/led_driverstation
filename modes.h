@@ -8,6 +8,13 @@
 
 // rainbow colors
 namespace mode0 {
+
+  // relevant variables
+  struct {
+    unsigned int offset : 24; // hue
+    uint8_t curHi;            // current color
+  } rainbow;
+
   
   // cycle through the rainbow
   void cycle3(uint8_t& v0, uint8_t& v1, uint8_t& v2, uint8_t& curHi){
@@ -29,12 +36,6 @@ namespace mode0 {
       curHi = 0;
   }
 
-  // relevant variables
-  struct {
-    unsigned int offset : 24;
-    uint8_t curHi;
-  } rainbow;
-
   // run at start of mode
   void init(){
     rainbow.offset = 0;
@@ -52,8 +53,8 @@ namespace mode0 {
   
     // set the colors
     for (int i = 0; i < NUM_LEDS; i++) {
-      l_leds[i] = CRGB(r, g, b);
-      r_leds[i] = CRGB(r, g, b);
+      l_leds[i].setRGB(r, g, b);
+      r_leds[i].setRGB(r, g, b);
       cycle3(r, g, b, rainbow.curHi);
     }
     
@@ -82,8 +83,8 @@ namespace mode1 {
         curLED += 20;
         
       for (; i > 0 && curLED - i < 20; i--) {
-        l_leds[i] = CRGB(255, 0, 0);
-        r_leds[i] = CRGB(255, 0, 0);
+        l_leds[i].setRGB(255, 0, 0);
+        r_leds[i].setRGB(255, 0, 0);
       }
       
       l_leds[i] = CRGB::Black;
@@ -98,8 +99,8 @@ namespace mode1 {
         curLED -= 20;
         
       for (; i < NUM_LEDS - 1 && i - curLED < 20; i++) {
-        l_leds[i] = CRGB(255, 0, 0);
-        r_leds[i] = CRGB(255, 0, 0);
+        l_leds[i].setRGB(255, 0, 0);
+        r_leds[i].setRGB(255, 0, 0);
       }
       
       l_leds[i] = CRGB::Black;
@@ -136,8 +137,8 @@ namespace mode2 {
         curLED += 20;
         
       for (; i > 0 && curLED - i < 20; i--) {
-        l_leds[i] = CRGB(0, 0, 255);
-        r_leds[i] = CRGB(0, 0, 255);
+        l_leds[i].setRGB(0, 0, 255);
+        r_leds[i].setRGB(0, 0, 255);
       }
       
       l_leds[i] = CRGB::Black;
@@ -152,8 +153,8 @@ namespace mode2 {
         curLED -= 20;
         
       for (; i < NUM_LEDS - 1 && i - curLED < 20; i++) {
-        l_leds[i] = CRGB(0, 0, 255);
-        r_leds[i] = CRGB(0, 0, 255);
+        l_leds[i].setRGB(0, 0, 255);
+        r_leds[i].setRGB(0, 0, 255);
       }
       
       l_leds[i] = CRGB::Black;
@@ -191,17 +192,17 @@ namespace mode3 {
     const uint8_t sparking = 120;
 
     // Cool down every cell a little
-    for (int i = 0; i < NUM_LEDS; i++)
+    for (uint16_t i = 0; i < NUM_LEDS; i++)
       heat[i] = qsub8( heat[i],  random8(0, ((cooling * 10) / NUM_LEDS) + 2));
   
     // Heat from each cell drifts 'up' and diffuses a little
-    for (int k = NUM_LEDS - 1; k >= 2; k--)
+    for (uint16_t k = NUM_LEDS - 1; k >= 2; k--)
       heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2] ) / 3;
     
     // Randomly ignite new 'sparks' of heat near the bottom
     if (random8() < sparking) {
-      int y = random8(7);
-      heat[y] = qadd8(heat[y], random8(160,255) );
+      unsigned char y = random8(7);
+      heat[y] = qadd8(heat[y], random8(160,255));
     }
 
     // Map from heat cells to LED colors
@@ -209,14 +210,9 @@ namespace mode3 {
       
       CRGB color = HeatColor(heat[j]);
       
-      int pixelnumber;
+      uint16_t pixelNum = reverse ? (NUM_LEDS-1) - j : j;
       
-      if (reverse)
-        pixelnumber = (NUM_LEDS-1) - j;
-      else
-        pixelnumber = j;
-      
-      leds[pixelnumber] = color;
+      leds[pixelNum] = color;
     }
   }
   
@@ -272,7 +268,7 @@ namespace mode {
       case 1: mode1::periodic(); break;
       case 2: mode2::periodic(); break;
       case 3: mode3::periodic(); break;
-    }  
+    }
   }
 
 }
