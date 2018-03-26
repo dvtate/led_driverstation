@@ -2,10 +2,10 @@
 I tricked our drivers station out with some rgb leds. Should be cool.
 
 # Modes
-0 - rainbow (generic rgb shenanegins)
-1 - red alliance
-2 - blue alliance
-3 - coming soon
+0. rainbow (generic rgb shenanegins)
+1. red alliance
+2. blue alliance
+3. coming soon
 
 
 # Hardware
