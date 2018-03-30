@@ -89,7 +89,7 @@ namespace mode1 {
   
       if (curLED < 20)
         curLED += 20;
-  
+      
       for (; i > 0 && curLED - i < 20; i--) {
         l_leds[i].setRGB(255, 0, 0);
         r_leds[i].setRGB(255, 0, 0);
@@ -99,7 +99,7 @@ namespace mode1 {
       r_leds[i] = CRGB::Black;
   
       // move (and possibly switch directions)
-      if (++curLED == NUM_LEDS)
+      if (++curLED == NUM_LEDS - 1)
         goingRight = false;
   
     } else {
@@ -115,7 +115,7 @@ namespace mode1 {
       r_leds[i] = CRGB::Black;
   
       // move (and possibly switch directions)
-      if (--curLED == 0)
+      if (--curLED == 1)
         goingRight = true;
     }
   
@@ -160,7 +160,7 @@ namespace mode2 {
       r_leds[i] = CRGB::Black;
   
       // move (and possibly switch directions)
-      if (++curLED == NUM_LEDS)
+      if (++curLED == NUM_LEDS - 1)
         goingRight = false;
   
     } else {
@@ -176,7 +176,7 @@ namespace mode2 {
       r_leds[i] = CRGB::Black;
   
       // move (and possibly switch directions)
-      if (--curLED == 0)
+      if (--curLED == 1)
         goingRight = true;
     }
   
@@ -324,7 +324,7 @@ namespace mode4 {
 namespace mode {
   
   // current mode
-  uint8_t modeNum = 0;
+  volatile uint8_t modeNum = 0;
   
   // switch modes
   void next() {
