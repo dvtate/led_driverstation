@@ -3,10 +3,10 @@
 #include <FastLED.h>
 
 // pushbutton to swich modes
-#define BUTTON_PIN A4
+#define BUTTON_PIN 2
 
 // pot for brightness setting
-#define POT_DIMMER_PIN A3
+#define POT_DIMMER_PIN A5
 
 // 2M of a 144LED/M led strip
 #define L_LED_DATA_PIN 4
@@ -18,8 +18,8 @@
 CRGB l_leds[NUM_LEDS];
 CRGB r_leds[NUM_LEDS];
 
-// comment out to remove 
-#define DEBUG_MODE
+// uncomment to enable debug mode (useful info sent over serial)
+//#define DEBUG_MODE
 
 
 // light and color modes and switching mechanisms
@@ -28,9 +28,13 @@ CRGB r_leds[NUM_LEDS];
 // isr to check if mode change button was pressed
 // ret - true if mode changed, else false
 bool chkin(){
-  return false;
   // don't want repeated triggering
   static bool changeable = true;
+
+  #ifdef DEBUG_MODE
+    //Serial.print("button:");
+    //Serial.println(digitalRead(BUTTON_PIN));
+  #endif
   
   if (changeable && digitalRead(BUTTON_PIN)) {
     // if triggered, change modes and disable trigger
@@ -68,30 +72,34 @@ void setup(){
   FastLED.addLeds<APA102, L_LED_DATA_PIN, L_LED_CLOCK_PIN, BGR>(l_leds, NUM_LEDS);
   FastLED.addLeds<APA102, R_LED_DATA_PIN, R_LED_CLOCK_PIN, BGR>(r_leds, NUM_LEDS);
 
-  mode0::init();
 }
 
 // looped repeatedly forever
 void loop(){
+  
   // check input
-  //chkin();
-  mode::modeNum = 4;
+  chkin();
 
   // run light pattern
   mode::run();
   
 
   #ifdef DEBUG_MODE
-    Serial.println(mode::modeNum);
+    //Serial.println(mode::modeNum);
   #endif
   
   // in case lights are too bright we might wanna add a brightness pot
   // here I wanted minimum brightness to be 50, might need some adjustments later
-  //FastLED.setBrightness(analogRead(POT_DIMMER_PIN) / 5 + 50);
-  FastLED.setBrightness(255);
+  FastLED.setBrightness(analogRead(POT_DIMMER_PIN) / 4);
+
+  #ifdef DEBUG_MODE
+    //Serial.println(analogRead(POT_DIMMER_PIN) / 4);
+  #endif
   
   // apply the colors
   FastLED.show();
 
   FastLED.delay(1000 / 200); // 60 fps
+
+  //while(Serial.available()) { Serial.read(); }
 }
