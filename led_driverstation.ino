@@ -9,10 +9,10 @@
 #define POT_DIMMER_PIN A5
 
 // 2M of a 144LED/M led strip
-#define L_LED_DATA_PIN 4
-#define L_LED_CLOCK_PIN 5
-#define R_LED_DATA_PIN 6
-#define R_LED_CLOCK_PIN 7
+#define L_LED_DATA_PIN 5
+#define L_LED_CLOCK_PIN 4
+#define R_LED_DATA_PIN 7
+#define R_LED_CLOCK_PIN 6
 
 #define NUM_LEDS 144 // per side of the setup
 CRGB l_leds[NUM_LEDS];
@@ -82,24 +82,20 @@ void loop(){
 
   // run light pattern
   mode::run();
-  
 
-  #ifdef DEBUG_MODE
-    //Serial.println(mode::modeNum);
-  #endif
-  
+    
   // in case lights are too bright we might wanna add a brightness pot
   // here I wanted minimum brightness to be 50, might need some adjustments later
   FastLED.setBrightness(analogRead(POT_DIMMER_PIN) / 4);
 
-  #ifdef DEBUG_MODE
+  #ifdef DEBUG_MODE // if flickery
     //Serial.println(analogRead(POT_DIMMER_PIN) / 4);
   #endif
   
   // apply the colors
   FastLED.show();
 
-  FastLED.delay(1000 / 200); // 60 fps
+  FastLED.delay(1000 / 200); // 200 fps (prolly less)
 
   //while(Serial.available()) { Serial.read(); }
 }
