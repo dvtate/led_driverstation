@@ -246,60 +246,69 @@ namespace mode3 {
 }
 
 
-// super lame basic switch simulator
-namespace mode4 {
-  
+struct {
   bool redCtl = false;
-  bool lit = true;
+  uint8_t brightness = true;
   uint8_t frame = 0;
   uint8_t slidein = 0;
+} switch_sim;
+
+
+
+
+// switch simulator
+namespace mode4 {
   
   void init() {
     #ifdef DEBUG_MODE
       Serial.println("switched to switch mode");
     #endif
 
+    // starts out white like irl
     for (uint8_t i = 0; i < NUM_LEDS; i++)
       l_leds[i] = r_leds[i] = CRGB::White;
     
-  
-    redCtl = false;
-    lit = true;
-    frame = 0;
-    slidein = 0;
+    // set vars
+    switch_sim.redCtl = false;
+    switch_sim.brightness = true;
+    switch_sim.frame = 0;
+    switch_sim.slidein = 0;
   }
   
   void periodic() {
 
-    // startup
-    if (slidein < NUM_LEDS / 2) {
-      l_leds[slidein] = CRGB::Red;
-      l_leds[NUM_LEDS - 1 - slidein] = CRGB::Red;
-      r_leds[slidein] = CRGB::Blue;
-      r_leds[NUM_LEDS - 1 - slidein] = CRGB::Blue;
+    // startup - slide in colors
+    if (switch_sim.slidein < NUM_LEDS / 2) {
+      l_leds[switch_sim.slidein] = CRGB::Red;
+      l_leds[NUM_LEDS - 1 - switch_sim.slidein] = CRGB::Red;
+      r_leds[switch_sim.slidein] = CRGB::Blue;
+      r_leds[NUM_LEDS - 1 - switch_sim.slidein] = CRGB::Blue;
       
-      slidein++;
+      switch_sim.slidein++;
+
+    // alternating color control, flickering when in control
     } else {
       // every 10th frame we flicker
-      if (++frame % 10 == 0)
-        lit = !lit;
+      if (++switch_sim.frame % 10 == 0)
+        switch_sim.brightness = !switch_sim.brightness;
 
       // after 10 flickers we reset
-      if (frame > 100) {
-        redCtl = !redCtl;
-        frame = 0;
+      if (switch_sim.frame > 100) {
+        switch_sim.redCtl = !switch_sim.redCtl;
+        switch_sim.frame = 0;
       }
-    
+
+      // color to apply to all leds on highlighted side
       CRGB clr;
 
       // set color
-      if (redCtl)
-        clr = CRGB(lit ? 255 : 100, 0, 0);
+      if (switch_sim.redCtl)
+        clr = CRGB(switch_sim.brightness ? 255 : 100, 0, 0);
       else
-        clr = CRGB(0, 0, lit ? 255 : 100);
+        clr = CRGB(0, 0, switch_sim.brightness ? 255 : 100);
 
       // apply color
-      if (redCtl)
+      if (switch_sim.redCtl)
         for (CRGB& c : l_leds)
           c = clr;
       else
@@ -313,12 +322,130 @@ namespace mode4 {
 
 
 
+// red switch simulator
+namespace mode5 {
+  
+  void init() {
+    #ifdef DEBUG_MODE
+      Serial.println("switched to red switch mode");
+    #endif
+
+    // starts out white like irl
+    for (uint8_t i = 0; i < NUM_LEDS; i++)
+      l_leds[i] = r_leds[i] = CRGB::White;
+    
+    // set vars
+    switch_sim.brightness = 0;
+    switch_sim.frame = 0;
+    switch_sim.slidein = 0;
+    switch_sim.redCtl = false;
+    
+  }
+  
+  void periodic() {
+
+    // startup - slide in colors
+    if (switch_sim.slidein < NUM_LEDS / 2) {
+      l_leds[switch_sim.slidein] = CRGB::Red;
+      l_leds[NUM_LEDS - 1 - switch_sim.slidein] = CRGB::Red;
+      r_leds[switch_sim.slidein] = CRGB::Blue;
+      r_leds[NUM_LEDS - 1 - switch_sim.slidein] = CRGB::Blue;
+      
+      switch_sim.slidein++;
+
+    // alternating color control, flickering when in control
+    } else {
+   
+      // set color
+      CRGB clr = CRGB(switch_sim.brightness, 0, 0);
+
+
+      if (switch_sim.brightness == 0)
+        switch_sim.redCtl = false;
+      else if (switch_sim.brightness == 255)
+        switch_sim.redCtl = true;
+
+      // fade
+      if (switch_sim.redCtl)
+        switch_sim.brightness -= 5;
+      else
+        switch_sim.brightness += 5;
+      
+      
+      for (CRGB& c : l_leds)
+        c = clr;
+
+    }
+  
+  }
+}
+
+
+
+// blue switch simulator
+namespace mode6 {
+  
+  void init() {
+    #ifdef DEBUG_MODE
+      Serial.println("switched to red switch mode");
+    #endif
+
+    // starts out white like irl
+    for (uint8_t i = 0; i < NUM_LEDS; i++)
+      l_leds[i] = r_leds[i] = CRGB::White;
+    
+    // set vars
+    switch_sim.brightness = 0;
+    switch_sim.frame = 0;
+    switch_sim.slidein = 0;
+    switch_sim.redCtl = false;
+    
+  }
+  
+  void periodic() {
+
+    // startup - slide in colors
+    if (switch_sim.slidein < NUM_LEDS / 2) {
+      l_leds[switch_sim.slidein] = CRGB::Red;
+      l_leds[NUM_LEDS - 1 - switch_sim.slidein] = CRGB::Red;
+      r_leds[switch_sim.slidein] = CRGB::Blue;
+      r_leds[NUM_LEDS - 1 - switch_sim.slidein] = CRGB::Blue;
+      
+      switch_sim.slidein++;
+
+    // alternating color control, flickering when in control
+    } else {
+   
+      // set color
+      CRGB clr = CRGB(0, 0, switch_sim.brightness);
+
+
+      if (switch_sim.brightness == 0)
+        switch_sim.redCtl = false;
+      else if (switch_sim.brightness == 255)
+        switch_sim.redCtl = true;
+
+      // fade
+      if (switch_sim.redCtl)
+        switch_sim.brightness -= 5;
+      else
+        switch_sim.brightness += 5;
+      
+      
+      for (CRGB& c : r_leds)
+        c = clr;
+
+    }
+  
+  }
+}
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 
 // 0-3
-#define NUM_MODES 5
+#define NUM_MODES 7
 
 // mode related stuff
 namespace mode {
@@ -351,6 +478,8 @@ namespace mode {
       case 2: mode2::init(); break;
       case 3: mode3::init(); break;
       case 4: mode4::init(); break;
+      case 5: mode5::init(); break;
+      case 6: mode6::init(); break;
     }
   }
   
@@ -362,6 +491,8 @@ namespace mode {
       case 2: mode2::periodic(); break;
       case 3: mode3::periodic(); break;
       case 4: mode4::periodic(); break;
+      case 5: mode5::periodic(); break;
+      case 6: mode6::periodic(); break;
     }
   }
 
