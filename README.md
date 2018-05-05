@@ -5,8 +5,11 @@ I tricked our drivers station out with some rgb leds. Should be cool.
 0. rainbow (generic rgb shenanegins)
 1. red alliance
 2. blue alliance
-3. coming soon
-
+3. fire2012
+4. switch simulator alternating
+5. switch simulator red
+6. switch simulator blue
+potentially more in future
 
 # Hardware
 - 2 meters of 144 LED/m APA102-C RGB led strips
