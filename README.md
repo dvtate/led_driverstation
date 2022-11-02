@@ -19,3 +19,9 @@ potentially more in future
 - arduino nano (to control LED's)
 - switch (power) + push button (mode) 
 
+# Demo
+I made a short video demonstration which you can [watch on Youtube](https://www.youtube.com/watch?v=N0QuBBCD7qA).
+
+[![Video thumbnail](https://img.youtube.com/vi/N0QuBBCD7qA/1.jpg)](https://www.youtube.com/watch?v=N0QuBBCD7qA)
+[![Video thumbnail](https://img.youtube.com/vi/N0QuBBCD7qA/2.jpg)](https://www.youtube.com/watch?v=N0QuBBCD7qA)
+[![Video thumbnail](https://img.youtube.com/vi/N0QuBBCD7qA/3.jpg)](https://www.youtube.com/watch?v=N0QuBBCD7qA)
